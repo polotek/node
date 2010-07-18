@@ -74,6 +74,8 @@ static inline bool SetNonBlock(int fd) {
 
 
 static inline bool SetSockFlags(int fd) {
+  int flags = 1;
+  setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (void *)&flags, sizeof(flags));
   return SetNonBlock(fd) && SetCloseOnExec(fd);
 }
 
@@ -348,8 +350,11 @@ static Handle<Value> Connect(const Arguments& args) {
   return Undefined();
 }
 
+// Mac's SUN_LEN is broken
 #if defined(__APPLE__)
-    #define SUN_LEN(ptr) (ptr->sun_len-2)
+# define SUN_LEN(ptr) ((ptr)->sun_len-2)
+#elif !defined(SUN_LEN)
+# define SUN_LEN(ptr) strlen((ptr)->sun_path)
 #endif
 
 #define ADDRESS_TO_JS(info, address_storage) \
