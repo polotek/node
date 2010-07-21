@@ -294,7 +294,7 @@ are readable, writable, or both. All streams are instances of `EventEmitter`.
 
 ## Readable Stream
 
-A **readable stream** has the following methods, members, and events.
+A `Readable Stream` has the following methods, members, and events.
 
 ### Event: 'data'
 
@@ -357,7 +357,7 @@ Closes the underlying file descriptor. Stream will not emit any more events.
 
 ## Writable Stream
 
-A **writable stream** has the following methods, members, and events.
+A `Writable Stream` has the following methods, members, and events.
 
 ### Event: 'drain'
 
@@ -546,7 +546,7 @@ programs.
 
 ### process.stdout
 
-A writable stream to `stdout`.
+A `Writable Stream` to `stdout`.
 
 Example: the definition of `console.log`
 
@@ -678,7 +678,7 @@ Gets the group identity of the process. (See getgid(2).)  This is the numerical 
 
 ### process.setgid(id)
 
-Sets the group identity of the process. (See setgid(2).)  This is the numerical group id, not the group name.
+Sets the group identity of the process. (See setgid(2).)  This accepts either a numerical ID or a groupname string.  If a groupname is specified, this method blocks while resolving it to a numerical ID.
 
     console.log('Current gid: ' + process.getgid());
     try {
@@ -699,7 +699,7 @@ Gets the user identity of the process. (See getuid(2).)  This is the numerical u
 
 ### process.setuid(id)
 
-Sets the user identity of the process. (See setuid(2).)  This is the numerical userid, not the username.
+Sets the user identity of the process. (See setuid(2).)  This accepts either a numerical ID or a username string.  If a username is specified, this method blocks while resolving it to a numerical ID.
 
     console.log('Current uid: ' + process.getuid());
     try {
@@ -919,7 +919,7 @@ See `waitpid(2)`.
 
 ### child.stdin
 
-A `writable stream` that represents the child process's `stdin`.
+A `Writable Stream` that represents the child process's `stdin`.
 Closing this stream via `end()` often causes the child process to terminate.
 
 ### child.stdout
@@ -1048,6 +1048,7 @@ There is a second optional argument to specify several options. The default opti
     , timeout: 0
     , maxBuffer: 200*1024
     , killSignal: 'SIGKILL'
+    , env: null
     }
 
 If `timeout` is greater than 0, then it will kill the child process
@@ -1568,7 +1569,7 @@ Objects returned from `fs.stat()` and `fs.lstat()` are of this type.
 
 ## fs.ReadStream
 
-`ReadStream` is a readable stream.
+`ReadStream` is a `Readable Stream`.
 
 ### fs.createReadStream(path, [options])
 
@@ -1585,7 +1586,7 @@ Returns a new ReadStream object (See `Readable Stream`).
 
 ## fs.WriteStream
 
-`WriteStream` is a writable stream.
+`WriteStream` is a `Writable Stream`.
 
 ### fs.createWriteStream(path, [options])
 
@@ -1821,15 +1822,17 @@ Resumes a paused request.
 
 The `net.Stream` object associated with the connection.
 
+
 With HTTPS support, use request.connection.verifyPeer() and
 request.connection.getPeerCertificate() to obtain the client's
 authentication details.
 
 
+
 ## http.ServerResponse
 
 This object is created internally by a HTTP server--not by the user. It is
-passed as the second parameter to the `'request'` event. It is a writable stream.
+passed as the second parameter to the `'request'` event. It is a `Writable Stream`.
 
 
 ### response.writeHead(statusCode, [reasonPhrase], [headers])
@@ -2033,7 +2036,7 @@ followed by `request.end()`.
 This object is created when making a request with `http.Client`. It is
 passed to the `'response'` event of the request object.
 
-The response implements the **readable stream** interface.
+The response implements the `Readable Stream` interface.
 
 ### Event: 'data'
 
@@ -2198,7 +2201,7 @@ Emitted when a stream connection successfully establishes a HTTPS handshake with
 
 Emitted when data is received.  The argument `data` will be a `Buffer` or
 `String`.  Encoding of data is set by `stream.setEncoding()`.
-(See the section on Readable Streams for more information.)
+(See the section on `Readable Stream` for more information.)
 
 ### Event: 'end'
 
@@ -2583,14 +2586,14 @@ are created.  Unix domain sockets do not start listening until calling `bind()` 
 Emitted when a socket is closed with `close()`.  No new `message` events will be emitted
 on this socket.
 
-### dgram.createSocket(type [, callback])
+### dgram.createSocket(type, [callback])
 
 Creates a datagram socket of the specified types.  Valid types are:
 `udp4`, `udp6`, and `unix_dgram`.  
 
 Takes an optional callback which is added as a listener for `message` events.
 
-### dgram.send(buf, offset, length, path [, callback])
+### dgram.send(buf, offset, length, path, [callback])
 
 For Unix domain datagram sockets, the destination address is a pathname in the filesystem.
 An optional callback may be supplied that is invoked after the `sendto` call is completed
@@ -2614,7 +2617,7 @@ Example of sending a message to syslogd on OSX via Unix domain socket `/var/run/
         console.log("Wrote " + bytes + " bytes to socket.");
     });
 
-### dgram.send(buf, offset, length, port, address [, callback])
+### dgram.send(buf, offset, length, port, address, [callback])
 
 For UDP sockets, the destination port and IP address must be specified.  A string
 may be supplied for the `address` parameter, and it will be resolved with DNS.  An 
@@ -2675,7 +2678,7 @@ Example of a Unix domain datagram client that talks to this server:
     });
     client.bind(client_path);
 
-### dgram.bind(port [, address])
+### dgram.bind(port, [address])
 
 For UDP sockets, listen for datagrams on a named `port` and optional `address`.  If
 `address` is not specified, the OS will try to listen on all addresses.
@@ -2964,7 +2967,7 @@ If you wish to disable the array mungeing (e.g. when generating parameters for a
 can set the `munge` argument to `false`.
 Example:
 
-    querystring.stringify({foo: 'bar', foo: 'baz', foo: 'boz'}, '&', '=', false)
+    querystring.stringify({foo: ['bar', 'baz', 'boz']}, '&', '=', false)
     // returns
     'foo=bar&foo=baz&foo=boz'
 
