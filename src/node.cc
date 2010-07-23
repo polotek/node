@@ -59,6 +59,12 @@ static Persistent<String> errno_symbol;
 static Persistent<String> syscall_symbol;
 static Persistent<String> errpath_symbol;
 
+static Persistent<String> io_reqs_symbol;
+static Persistent<String> io_active_symbol;
+static Persistent<String> io_pending_symbol;
+static Persistent<String> io_idle_symbol;
+static Persistent<String> io_max_symbol;
+
 static Persistent<String> rss_symbol;
 static Persistent<String> vsize_symbol;
 static Persistent<String> heap_total_symbol;
@@ -1182,6 +1188,35 @@ static void CheckStatus(EV_P_ ev_timer *watcher, int revents) {
 }
 
 
+    v8::Handle<v8::Value> IOThreadUsage(const v8::Arguments& args) {
+        HandleScope scope;
+        assert(args.Length() == 0);
+
+        unsigned int io_reqs = eio_nreqs(),
+            io_active = eio_nthreads(),
+            io_pending = eio_npending(),
+            io_max = eio_nmax(),
+            io_idle = io_max - (io_active + io_pending);
+
+        Local<Object> info = Object::New();
+
+        if (io_active_symbol.IsEmpty()) {
+            io_reqs_symbol = NODE_PSYMBOL("requests");
+            io_active_symbol = NODE_PSYMBOL("active");
+            io_pending_symbol = NODE_PSYMBOL("pending");
+            io_idle_symbol = NODE_PSYMBOL("idle");
+            io_max_symbol = NODE_PSYMBOL("max");
+        }
+
+        info->Set(io_reqs_symbol, Integer::NewFromUnsigned(io_reqs));
+        info->Set(io_active_symbol, Integer::NewFromUnsigned(io_active));
+        info->Set(io_pending_symbol, Integer::NewFromUnsigned(io_pending));
+        info->Set(io_idle_symbol, Integer::NewFromUnsigned(io_idle));
+        info->Set(io_max_symbol, Integer::NewFromUnsigned(io_max));
+
+        return scope.Close(info);
+    }
+
 v8::Handle<v8::Value> MemoryUsage(const v8::Arguments& args) {
   HandleScope scope;
   assert(args.Length() == 0);
@@ -1623,6 +1658,7 @@ static void Load(int argc, char *argv[]) {
   NODE_SET_METHOD(process, "umask", Umask);
   NODE_SET_METHOD(process, "dlopen", DLOpen);
   NODE_SET_METHOD(process, "kill", Kill);
+  NODE_SET_METHOD(process, "ioThreadUsage", IOThreadUsage);
   NODE_SET_METHOD(process, "memoryUsage", MemoryUsage);
   NODE_SET_METHOD(process, "checkBreak", CheckBreak);
 

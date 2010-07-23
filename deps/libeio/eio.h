@@ -223,9 +223,10 @@ void eio_set_max_parallel (unsigned int nthreads);
 void eio_set_max_idle     (unsigned int nthreads);
 
 unsigned int eio_nreqs    (void); /* number of requests in-flight */
-unsigned int eio_nready   (void); /* number of not-yet handled requests */
-unsigned int eio_npending (void); /* numbe rof finished but unhandled requests */
+unsigned int eio_nready   (void); /* number of not-yet started requests */
+unsigned int eio_npending (void); /* number of finished but unhandled requests */
 unsigned int eio_nthreads (void); /* number of worker threads in use currently */
+unsigned int eio_nmax     (void); /* max number of threads wanted */
 
 /*****************************************************************************/
 /* convinience wrappers */

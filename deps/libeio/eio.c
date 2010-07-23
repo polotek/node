@@ -212,7 +212,7 @@ static int tvdiff (struct timeval *tv1, struct timeval *tv2)
        + ((tv2->tv_usec - tv1->tv_usec) >> 10);
 }
 
-static unsigned int started, idle, wanted = 4;
+static unsigned int started, idle, wanted = 6;
 
 static void (*want_poll_cb) (void);
 static void (*done_poll_cb) (void);
@@ -312,6 +312,11 @@ static unsigned int etp_nthreads (void)
   if (WORDACCESS_UNSAFE) X_UNLOCK (reqlock);
 
   return retval;
+}
+
+static unsigned int etp_nmax (void)
+{
+    return wanted;
 }
 
 /*
@@ -742,6 +747,11 @@ unsigned int eio_npending (void)
 unsigned int eio_nthreads (void)
 {
   return etp_nthreads ();
+}
+
+unsigned int eio_nmax (void)
+{
+    return etp_nmax();
 }
 
 void eio_set_max_poll_time (double nseconds)
