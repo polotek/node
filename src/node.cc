@@ -267,6 +267,28 @@ static void EIODonePoll(void) {
   ev_async_send(EV_DEFAULT_UC_ &eio_done_poll_notifier);
 }
 
+    static Handle<Value> GetMaxIOThreads(Local<String> name, const AccessorInfo& info) {
+        HandleScope scope;
+
+        return Integer::New(eio_nmax());
+    }
+
+    static void SetMaxIOThreads(Local<String> name, 
+                                Local<Value> value, 
+                                const AccessorInfo& info) {
+        HandleScope scope;
+
+        unsigned int val = value->Int32Value();
+        if(value->IsUint32() && val > 0) {
+            unsigned int cur_max = eio_nmax();
+            if(cur_max < val)
+                eio_set_min_parallel(val);
+            else
+                eio_set_max_parallel(val);
+        } else {
+            ThrowException(Exception::Error(String::New("Max threads must be set to a positive integer.")));
+        }
+    }
 
 static inline const char *errno_string(int errorno) {
 #define ERRNO_CASE(e)  case e: return #e;
@@ -1668,6 +1690,9 @@ static void Load(int argc, char *argv[]) {
   process->Set(String::NewSymbol("EventEmitter"),
                EventEmitter::constructor_template->GetFunction());
 
+
+  process->SetAccessor(String::NewSymbol("maxIOThreads"),
+                       GetMaxIOThreads, SetMaxIOThreads);
 
   // Initialize the C++ modules..................filename of module
   IOWatcher::Initialize(process);              // io_watcher.cc
