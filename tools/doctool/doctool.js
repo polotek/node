@@ -81,15 +81,25 @@ function loadIncludes(data, current_file) {
   });
 }
 
+function pad(prelen, len, string) {
+  var ret = '', i = len - prelen;
+  while(i--) {
+    ret += string;
+  }
+  return ret;
+}
 
 function convertData(data) {
-  data = data.replace(/^Param: (\w+) {([^}]+)} ([\w .]+)$/gmi, 
-    function(o, name, type, desc) {
-      return '\n> **' + name + '**' + 
-        '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
-        '_' + type.replace('|', '_ or _') + '_' + 
-        '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + 
-        desc;
+  data = data
+    .replace('\r\n', '\n')
+    .replace('\t', '  ')
+    .replace(/^Param: (\w+) {([^}]+)} ([^\n]+)$/gmi, function(o, n, t, d) {
+      t = t.replace('|', '_ or _');
+      return '> **' + n + '**' + 
+        pad(n.length, 40, '&nbsp;') +
+        '_' + t + '_' + 
+        pad(t.replace('_', '').length, 40, '&nbsp;') + 
+        d + '\n> ';
     });
   // Convert it to HTML from Markdown
   var html = markdown.toHTML(markdown.parse(data, "Maruku"), {xhtml:true})
