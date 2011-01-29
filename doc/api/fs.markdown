@@ -56,39 +56,56 @@ the entire process until they complete--halting all connections.
 
 Param: path1 {String} The original file path
 Param: path2 {String} The new file path
-Param: callback {Function(err)} Optional [callback](callbacks.html)
+Param: callback {Function(err)} Optional [callback](../callbacks.html).
 
-Asynchronous rename(2). No arguments other than a possible exception are given
-to the completion callback.
+Asynchronous rename(2).
 
 ### fs.renameSync(path1, path2)
+
+Param: path1 {String} The original file path
+Param: path2 {String} The new file path
 
 Synchronous rename(2).
 
 ### fs.truncate(fd, len, [callback])
 
-Asynchronous ftruncate(2). No arguments other than a possible exception are
-given to the completion callback.
+Param: fd {fd} The file descriptor to operate on.
+Param: len {Integer} The length to truncate the file to.
+Param: callback {Function(err)} Optional [callback](../callbacks.html).
+
+Asynchronous ftruncate(2).
 
 ### fs.truncateSync(fd, len)
+
+Param: fd {fd} The file descriptor to operate on.
+Param: len {Integer} The length to truncate the file to.
 
 Synchronous ftruncate(2).
 
 ### fs.chmod(path, mode, [callback])
 
-Asynchronous chmod(2). No arguments other than a possible exception are given
-to the completion callback.
+Param: path {String} The path to the file to chmod.
+Param: mode {Integer} The base-8 integer describing the file mode.
+Param: callback {Function(err)} Optional [callback](../callbacks.html).
+
+Asynchronous chmod(2).
 
 ### fs.chmodSync(path, mode)
+
+Param: path {String} The path to the file to chmod.
+Param: mode {Integer} The base-8 integer describing the file mode.
 
 Synchronous chmod(2).
 
 ### fs.stat(path, [callback])
 
-Asynchronous stat(2). The callback gets two arguments `(err, stats)` where
-`stats` is a `fs.Stats` object. It looks like this:
+Param: path {String} The path to the file to stat.
+Param: callback {Function(err, stats)} Optional [callback](../callbacks.html).
 
-    { dev: 2049,
+Asynchronous stat(2). The `stats` argument passed to the callback is a `fs.Stats` object. See the [fs.Stats](#fs.Stats) section below for more information. It looks like this:
+
+    {
+      dev: 2049,
       ino: 305352,
       mode: 16877,
       nlink: 12,
@@ -100,9 +117,8 @@ Asynchronous stat(2). The callback gets two arguments `(err, stats)` where
       blocks: 8,
       atime: '2009-06-29T11:11:55Z',
       mtime: '2009-06-29T11:11:40Z',
-      ctime: '2009-06-29T11:11:40Z' }
-
-See the `fs.Stats` section below for more information.
+      ctime: '2009-06-29T11:11:40Z'
+    }
 
 ### fs.lstat(path, [callback])
 
