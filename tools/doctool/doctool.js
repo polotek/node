@@ -83,8 +83,17 @@ function loadIncludes(data, current_file) {
 
 
 function convertData(data) {
+  data = data.replace(/^Param: (\w+) {([^}]+)} ([\w .]+)$/gmi, 
+    function(o, name, type, desc) {
+      return '\n> **' + name + '**' + 
+        '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+        '_' + type.replace('|', '_ or _') + '_' + 
+        '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + 
+        desc;
+    });
   // Convert it to HTML from Markdown
-  var html = markdown.toHTML(markdown.parse(data), {xhtml:true})
+  var html = markdown.toHTML(markdown.parse(data, "Maruku"), {xhtml:true})
+    .replace(/&amp;(\w+);/g, "&$1;")
     .replace(/<hr><\/hr>/g, "<hr />")
     .replace(/(\<h[2-6])\>([^<]+)(\<\/h[1-6]\>)/gmi, function(o, ts, c, te) {
       return ts+' id="'+formatIdString(c)+'">'+c+te;
