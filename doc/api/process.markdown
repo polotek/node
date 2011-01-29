@@ -4,9 +4,7 @@ The `process` object is a global object and can be accessed from anywhere.
 It is an instance of `EventEmitter`.
 
 
-### Event: 'exit'
-
-`function () {}`
+### Event: exit
 
 Emitted when the process is about to exit.  This is a good hook to perform
 constant time checks of the module's state (like for unit tests).  The main
@@ -22,15 +20,14 @@ Example of listening for `exit`:
       console.log('About to exit.');
     });
 
-### Event: 'uncaughtException'
+### Event: uncaughtException
 
-`function (err) { }`
+Param: err {Error} The exception that trigger this event.
 
 Emitted when an exception bubbles all the way back to the event loop. If a
-listener is added for this exception, the default action (which is to print
-a stack trace and exit) will not occur.
+listener is added for this exception, the default action &mdash; which is to print a stack trace and exit &mdash; will not occur.
 
-Example of listening for `uncaughtException`:
+Example of listening for an uncaughtException:
 
     process.on('uncaughtException', function (err) {
       console.log('Caught exception: ' + err);
@@ -52,10 +49,7 @@ stay running forever, `uncaughtException` can be a useful safety mechanism.
 
 ### Signal Events
 
-`function () {}`
-
-Emitted when the processes receives a signal. See sigaction(2) for a list of
-standard POSIX signal names such as SIGINT, SIGUSR1, etc.
+Emitted when the processes receives a signal. See [signal(7)](http://kernel.org/doc/man-pages/online/pages/man7/signal.7.html) for a list of standard POSIX signal names.
 
 Example of listening for `SIGINT`:
 
@@ -132,6 +126,8 @@ Example:
 
 ### process.chdir(directory)
 
+Param: directory {String} The directory path to change to.
+
 Changes the current working directory of the process or throws an exception if that fails.
 
     console.log('Starting directory: ' + process.cwd());
@@ -157,10 +153,11 @@ Returns the current working directory of the process.
 An object containing the user environment. See environ(7).
 
 
-### process.exit(code=0)
+### process.exit([code])
 
-Ends the process with the specified `code`.  If omitted, exit uses the
-'success' code `0`.
+Param: code {Integer} The optional exit code to exit with.
+
+Ends the process with the code of `code`. If the `code` argument is omitted, the value of `0` (success) will be used.
 
 To exit with a 'failure' code:
 
@@ -171,7 +168,7 @@ The shell that executed node should see the exit code as 1.
 
 ### process.getgid()
 
-Gets the group identity of the process. (See getgid(2).)
+Gets the group identity of the process, see [getgid(2)](http://kernel.org/doc/man-pages/online/pages/man2/getgid.2.html)
 This is the numerical group id, not the group name.
 
     console.log('Current gid: ' + process.getgid());
@@ -179,9 +176,9 @@ This is the numerical group id, not the group name.
 
 ### process.setgid(id)
 
-Sets the group identity of the process. (See setgid(2).)  This accepts either
-a numerical ID or a groupname string. If a groupname is specified, this method
-blocks while resolving it to a numerical ID.
+Param: id {Integer|String} The numerical group ID or groupname string.
+
+Sets the group identity of the process, see [setgid(2)](http://kernel.org/doc/man-pages/online/pages/man2/setgid.2.html). If a groupname is specified for `id`, this method blocks while resolving it to a numerical ID.
 
     console.log('Current gid: ' + process.getgid());
     try {
@@ -195,17 +192,17 @@ blocks while resolving it to a numerical ID.
 
 ### process.getuid()
 
-Gets the user identity of the process. (See getuid(2).)
-This is the numerical userid, not the username.
+Gets the user identity of the process, see [getuid(2)](http://kernel.org/doc/man-pages/online/pages/man2/getuid.2.html)
+This is the numerical user ID, not the username.
 
     console.log('Current uid: ' + process.getuid());
 
 
 ### process.setuid(id)
 
-Sets the user identity of the process. (See setuid(2).)  This accepts either
-a numerical ID or a username string.  If a username is specified, this method
-blocks while resolving it to a numerical ID.
+Param: id {Integer|String} The numerical user ID or username string.
+
+Sets the user identity of the process, see [setuid(2)](http://kernel.org/doc/man-pages/online/pages/man2/setuid.2.html). This accepts either a numerical ID or a username string. If a username is specified, this method blocks while resolving it to a numerical ID.
 
     console.log('Current uid: ' + process.getuid());
     try {
@@ -230,12 +227,12 @@ A compiled-in property that exposes `NODE_PREFIX`.
     console.log('Prefix: ' + process.installPrefix);
 
 
-### process.kill(pid, signal='SIGTERM')
+### process.kill(pid, [signal])
 
-Send a signal to a process. `pid` is the process id and `signal` is the
-string describing the signal to send.  Signal names are strings like
-'SIGINT' or 'SIGUSR1'.  If omitted, the signal will be 'SIGTERM'.
-See kill(2) for more information.
+Param: pid {Integer} The process id.
+Param: signal {String} The optional string of the signal to send.
+
+Send a signal to a process, see [kill(2)](http://kernel.org/doc/man-pages/online/pages/man2/kill.2.html) for more information. If the `signal` argument is omitted, the value of `'SIGTERM'` will be used.
 
 Note that just because the name of this function is `process.kill`, it is
 really just a signal sender, like the `kill` system call.  The signal sent
@@ -283,15 +280,20 @@ Returns an object describing the memory usage of the Node process.
 
 This will generate:
 
-    { rss: 4935680,
+    {
+			rss: 4935680,
       vsize: 41893888,
       heapTotal: 1826816,
-      heapUsed: 650472 }
+      heapUsed: 650472
+		}
 
 `heapTotal` and `heapUsed` refer to V8's memory usage.
 
 
 ### process.nextTick(callback)
+
+Param: callback {Function()} The function to call on nextTick.
+
 
 On the next loop around the event loop call this callback.
 This is *not* a simple alias to `setTimeout(fn, 0)`, it's much more
@@ -304,9 +306,9 @@ efficient.
 
 ### process.umask([mask])
 
-Sets or reads the process's file mode creation mask. Child processes inherit
-the mask from the parent process. Returns the old mask if `mask` argument is
-given, otherwise returns the current mask.
+Param: mask {Integer} The optional new mask to set.
+
+Sets or reads the process's file mode creation mask, see [umask(2)](http://kernel.org/doc/man-pages/online/pages/man2/umask.2.html) for more information. Child processes inherit their mask from their parent process. Returns the old mask if `mask` argument is given, otherwise returns the current mask.
 
     var oldmask, newmask = 0644;
 

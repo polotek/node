@@ -1,6 +1,5 @@
 /*--------------------- Layout and Typography ----------------------------*/
 body {
-//  font-family: "Helvetica Neue", Helvetica, FreeSans, Arial, sans-serif;
   font-family: Georgia, FreeSerif, Times, serif;
   font-size: 0.9375em;
   line-height: 1.4667em;
@@ -165,6 +164,14 @@ h6 {
 code.pre {
   white-space: pre;
 }
+
+blockquote {
+  margin: 0 0 1.4667em 1.2em;
+}
+
+  blockquote p {
+    margin: 0;
+  }
 
 #container {
   position: relative;

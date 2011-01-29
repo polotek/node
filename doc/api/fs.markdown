@@ -54,6 +54,10 @@ the entire process until they complete--halting all connections.
 
 ### fs.rename(path1, path2, [callback])
 
+Param: path1 {String} The original file path
+Param: path2 {String} The new file path
+Param: callback {Function(err)} Optional [callback](callbacks.html)
+
 Asynchronous rename(2). No arguments other than a possible exception are given
 to the completion callback.
 
