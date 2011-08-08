@@ -25,6 +25,8 @@ var events = require('events');
 
 
 function listener() {}
+function gListener1() {}
+function gListener2() {}
 
 var e1 = new events.EventEmitter();
 e1.addListener('foo', listener);
@@ -38,6 +40,11 @@ var e2 = new events.EventEmitter();
 e2.addListener('foo', listener);
 e2.addListener('bar', listener);
 e2.removeAllListeners();
-console.error(e2);
 assert.deepEqual([], e2.listeners('foo'));
 assert.deepEqual([], e2.listeners('bar'));
+
+var e3 = new events.EventEmitter();
+e3.addGlobalListener(gListener1);
+e3.addGlobalListener(gListener2);
+e3.removeAllGlobalListeners();
+assert.deepEqual([], e2.globalListeners());
