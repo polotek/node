@@ -252,8 +252,9 @@ in pseudocode of what require.resolve does:
     2. If X begins with './' or '/' or '../'
        a. LOAD_AS_FILE(Y + X)
        b. LOAD_AS_DIRECTORY(Y + X)
-    3. LOAD_NODE_MODULES(X, dirname(Y))
-    4. THROW "not found"
+    3. LOAD_THIS_PACKAGE(X, dirname(Y))
+    4. LOAD_NODE_MODULES(X, dirname(Y))
+    5. THROW "not found"
 
     LOAD_AS_FILE(X)
     1. If X is a file, load X as JavaScript text.  STOP
@@ -266,6 +267,11 @@ in pseudocode of what require.resolve does:
        b. let M = X + (json main field)
        c. LOAD_AS_FILE(M)
     2. LOAD_AS_FILE(X/index)
+
+    LOAD_THIS_PACKAGE(X, START)
+    1. let DIRS = path split(START)
+    2. for each DIR in DIRS:
+       a. If X/package.json is a file, LOAD_AS_DIRECTORY(DIR/X)
 
     LOAD_NODE_MODULES(X, START)
     1. let DIRS=NODE_MODULES_PATHS(START)
