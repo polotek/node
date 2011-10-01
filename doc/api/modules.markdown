@@ -111,18 +111,27 @@ A module prefixed with `'./'` is relative to the file calling `require()`.
 That is, `circle.js` must be in the same directory as `foo.js` for
 `require('./circle')` to find it.
 
-Without a leading '/' or './' to indicate a file, the module is either a
-"core module" or is loaded from a `node_modules` folder.
+Without a leading '/' or './' to indicate a file, node will search a few
+places for the module. If the module is not a "core module", it will be loaded
+from a containing package or from a `node_modules` folder.
 
 ### Loading from `node_modules` Folders
 
 If the module identifier passed to `require()` is not a native module,
 and does not begin with `'/'`, `'../'`, or `'./'`, then node starts at the
-parent directory of the current module, and adds `/node_modules`, and
-attempts to load the module from that location.
+parent directory of the current module follows a few simple rules.
 
-If it is not found there, then it moves to the parent directory, and so
-on, until the root of the tree is reached.
+First it looks for a package main module, indicated by a the presence of a
+`package.json` file. The `package.json` must have a `name` property that
+matches the name of the module being loaded. Then if it has a `main`
+property, node will attempt to load the module from that location.  Otherwise
+it will attempt to load the `index.js` file in this folder.
+
+If no package main module is found, then node appends `/node_modules` to
+this directory, and attempts to load the module from that location.
+
+If it is not found there, then it moves to the parent directory and repeats
+this process; and so on, until the root of the tree is reached.
 
 For example, if the file at `'/home/ry/projects/foo.js'` called
 `require('bar.js')`, then node would look in the following locations, in
